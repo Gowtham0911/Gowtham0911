@@ -21,7 +21,7 @@
 
   2. Web/Mobile App Dev - HTML5, CSS, Bootstrap, Java Script
 
-  3. Technologies and Frameworks – React, Express, Spring, Microservice
+  3. Technologies and Frameworks – React, Spring
 
   4. Softwares– Photoshop, VS code, Eclipse, Intelli J
 
