@@ -1,0 +1,157 @@
+pipeline{
+    agent any
+    tools{
+        maven 'MAVEN'
+    }
+     parameters{
+     choice(
+        name:'App_Name',
+        choices: ['User Management', 'Interview Management', 'Panel Management', 'Master Management', 'Candidate Management', 'API GateWay', 'Eureka Server'],
+        description: 'Choose Application'
+        )
+     }
+     stages{
+         stage("Choice UM"){
+            when{
+                expression {"${params.App_Name}"=="User Management"}
+            }
+            steps{
+             checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: '807c71ff-ee4c-43a3-bc75-1fe5499d1a8d', url: 'https://github.com/anand-zensar/user_management_rest_api_pm_dec_2022.git']]])
+             bat 'mvn -Dmaven.test.failure.ignore=true clean package'
+             script{
+                bat 'docker build -t anand-zensar/user_management_rest_api_pm_dec_2022-0.0.1 .'
+            }
+        }
+    }
+    stage("Choice IM"){
+     when{
+        expression {"${params.App_Name}"=="Interview Management"}
+        }
+        steps{
+            echo "Pulling changes from the branch ${params.App_Name}"
+            checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: '807c71ff-ee4c-43a3-bc75-1fe5499d1a8d', url: 'https://github.com/anand-zensar/interview_management_rest_api_pm_dec_2022.git']]])
+            bat 'mvn -Dmaven.test.failure.ignore=true clean package'
+            script{
+                bat 'docker build -t anand-zensar/interview_management_rest_api_pm_dec_2022-0.0.1 .'
+            }
+        }
+    }
+    stage("Choice PM"){
+            when{
+                expression {"${params.App_Name}"=="Panel Management"}
+            }
+            steps{
+             checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: '807c71ff-ee4c-43a3-bc75-1fe5499d1a8d', url: 'https://github.com/anand-zensar/panel_management_rest_api_pm_dec_2022.git']]])
+             bat 'mvn -Dmaven.test.failure.ignore=true clean package'
+             script{
+                bat 'docker build -t anand-zensar/panel_management_rest_api_pm_dec_2022-0.0.1 .'
+            }
+        }
+    }
+    stage("Choice MM"){
+            when{
+                expression {"${params.App_Name}"=="Master Management"}
+            }
+            steps{
+                checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: '807c71ff-ee4c-43a3-bc75-1fe5499d1a8d', url: 'https://github.com/anand-zensar/master_management_rest_api_pm_dec_2022.git']]])
+             bat 'mvn -Dmaven.test.failure.ignore=true clean package'
+             script{
+                bat 'docker build -t anand-zensar/master_management_rest_api_pm_dec_2022-0.0.1 .'
+            }
+        }
+    }
+    stage("Choice CM"){
+            when{
+                expression {"${params.App_Name}"=="Candidate Management"}
+            }
+            steps{
+            checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: '807c71ff-ee4c-43a3-bc75-1fe5499d1a8d', url: 'https://github.com/anand-zensar/candidate_management_rest_api_pm_dec_2022.git']]])
+             bat 'mvn -Dmaven.test.failure.ignore=true clean package'
+             script{
+                bat 'docker build -t anand-zensar/candidate_management_rest_api_pm_dec_2022-0.0.1 .'
+            }
+        }
+    }
+    stage("Choice AG"){
+            when{
+                expression {"${params.App_Name}"=="API GateWay"}
+            }
+            steps{
+            checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: '807c71ff-ee4c-43a3-bc75-1fe5499d1a8d', url: 'https://github.com/anand-zensar/api_gateway_pm_dec_2022.git']]])
+             bat 'mvn -Dmaven.test.failure.ignore=true clean package'
+             script{
+                bat 'docker build -t anand-zensar/api_gateway_pm_dec_2022-0.0.1 .'
+            }
+        }
+    }
+    stage("Choice US"){
+            when{
+                expression {"${params.App_Name}"=="Eureka Server"}
+            }
+            steps{
+             checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: '807c71ff-ee4c-43a3-bc75-1fe5499d1a8d', url: 'https://github.com/anand-zensar/eureka_server_pm_dec_2022.git']]])
+             bat 'mvn -Dmaven.test.failure.ignore=true clean package'
+             script{
+                bat 'docker build -t anand-zensar/eureka_server_pm_dec_2022-0.0.1 .'
+            }
+        }
+    }
+    stage("Build Container UM"){
+            when{
+                expression {"${params.App_Name}"=="User Management"}
+            }
+            steps{
+                bat 'docker run -p 8001:8001 anand-zensar/user_management_rest_api_pm_dec_2022-0.0.1 .'
+        }
+    }
+    
+    stage("Build Container IM"){
+            when{
+                expression {"${params.App_Name}"=="Interview Management"}
+            }
+            steps {
+                bat 'docker run -p 8004:8004 anand-zensar/interview_management_rest_api_pm_dec_2022-0.0.1 .'
+            }
+        }
+    stage("Build Container PM"){
+            when{
+                expression {"${params.App_Name}"=="Panel Management"}
+            }
+            steps{
+                bat 'docker run -p 8003:8003 anand-zensar/panel_management_rest_api_pm_dec_2022-0.0.1 .'
+        }
+    }
+    stage("Build Container MM"){
+            when{
+                expression {"${params.App_Name}"=="Master Management"}
+            }
+            steps{
+                bat 'docker run -p 8005:8005 anand-zensar/master_management_rest_api_pm_dec_2022-0.0.1 .'
+        }
+    }
+    stage("Build Container CM"){
+            when{
+                expression {"${params.App_Name}"=="Candidate Management"}
+            }
+            steps{
+                bat 'docker run -p 8002:8002 anand-zensar/candidate_management_rest_api_pm_dec_2022-0.0.1 .'
+        }
+    }
+    stage("Build Container AG"){
+            when{
+                expression {"${params.App_Name}"=="API GateWay"}
+            }
+            steps{
+                bat 'docker run -p 9191:9191 anand-zensar/api_gateway_pm_dec_2022-0.0.1 .'
+        }
+    }
+    stage("Build Container US"){
+            when{
+                expression {"${params.App_Name}"=="Eureka Server"}
+            }
+            steps{
+                bat 'docker run -p 8761:8761 anand-zensar/eureka_server_pm_dec_2022-0.0.1 .'
+        }
+    }
+    }
+}
